@@ -17,14 +17,19 @@ namespace Evolution_Simulation
         private Random _rnd;
 
         private int[] _value;
+
+        private double _tickFrequency;
+
+        public double TickFrequency
+        {
+            get { return _tickFrequency; }
+            set { _tickFrequency = value; lblTickFrequency.Text = _tickFrequency.ToString() + lblTickFrequency.Tag; }
+        }
+
         public int move
         {
             get { return _value[0]; }
-            set
-            {
-                _value[0] = value;
-                lbl1.Text = _value[0].ToString();
-            }
+            set { _value[0] = value; lbl1.Text = _value[0].ToString(); }
         }
         public int right
         {
@@ -62,6 +67,7 @@ namespace Evolution_Simulation
                 lbl5.Text = _value[4].ToString();
             }
         }
+
         public int stay
         {
             get { return _value[5]; }

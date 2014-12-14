@@ -31,7 +31,7 @@ namespace Evolution_Simulation
             DeadBodies = new List<DeadBody>();
             Cells = new Cell[Width, Height];
         }
-        
+
         public Cell Get(XY pos)
         {
             return Cells[pos.X, pos.Y];
@@ -42,20 +42,7 @@ namespace Evolution_Simulation
             var pos = tryFreePoint();
             if (IsEmpty(pos)) add(type, pos);
         }
-
-        public void Add(Creature c)
-        {
-            addToCells(c);
-            Creatures.Add(c);
-        }
-
-        private void addCreature(XY pos)
-        {
-            var c = new Creature(pos, _rnd);
-            addToCells(c);
-            Creatures.Add(c);
-        }
-
+        
         private void add(Type type, XY pos)
         {
             if (type == typeof(Plant))
@@ -76,6 +63,19 @@ namespace Evolution_Simulation
             }
         }
 
+        public void Add(Creature c)
+        {
+            addToCells(c);
+            Creatures.Add(c);
+        }
+
+        private void addCreature(XY pos)
+        {
+            var c = new Creature(pos, _rnd);
+            addToCells(c);
+            Creatures.Add(c);
+        }
+        
         private void addPlant(XY pos)
         {
             var p = Plant.Create(pos);

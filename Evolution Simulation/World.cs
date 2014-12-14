@@ -14,6 +14,7 @@ namespace Evolution_Simulation
         private Random _rnd;
         private MainForm _mainForm;
         private Explorer _explorer;
+        private System.Diagnostics.Stopwatch _stopwatch;
         public static Cell MonitoredCell;
 
         public static int SkipInterval, PlantsReplenishment, DeadBodyDecay, MinCreatures, MaxCreatures;
@@ -32,6 +33,8 @@ namespace Evolution_Simulation
             Grid = new Grid(width, height, _rnd);
             populate(MinCreatures, 0);
             ResizeDisplay();
+
+            _stopwatch = new System.Diagnostics.Stopwatch();
 
             Timer = new System.Windows.Forms.Timer();
             Timer.Tick += Timer_Tick;
@@ -109,6 +112,8 @@ namespace Evolution_Simulation
                 _mainForm.updateLabelCreatureCount(Grid.Creatures.Count);
                 _mainForm.updateLabelPlantsCount(Grid.Plants.Count);
                 _mainForm.updateLabelWorldAge(_worldAge);
+                _mainForm.TickFrequency = _stopwatch.ElapsedMilliseconds / SkipInterval;
+                _stopwatch.Restart();
             }
         }
 
