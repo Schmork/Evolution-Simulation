@@ -29,7 +29,7 @@ namespace Evolution_Simulation
             _rnd = rnd;
             createNetwork(brain);
         }
-        
+
         private void createNetwork(Brain brain)
         {
             createInputLayer();
@@ -74,7 +74,7 @@ namespace Evolution_Simulation
                 Neurons[layer][i] = createWebbedNeuron(prevLayer);
             }
         }
-        
+
         private Neuron createWebbedNeuron(Neuron[] prevLayer)
         {
             var connections = new Neuron.Connection[prevLayer.Length];
@@ -123,7 +123,7 @@ namespace Evolution_Simulation
 
             return new Neuron(connections, bias);
         }
-        
+
         private double mutate(double chance, double change)
         {
             double x = 0;
@@ -138,7 +138,19 @@ namespace Evolution_Simulation
         {
             for (int i = 0; i < inputVector.InputsForBrain.Length; i++)
             {
-                Neurons[0][i].SetValue(inputVector.InputsForBrain[i]);
+                Neurons[0][i].SetInputValue(inputVector.InputsForBrain[i]);
+            }
+            resetValues();
+        }
+
+        private void resetValues()
+        {
+            for (int i = 1; i < Neurons.Length; i++)        // skip InputNeuron Layer
+            {
+                foreach (var neuron in Neurons[i])
+                {
+                    neuron.HasValue = false;                    
+                }
             }
         }
 

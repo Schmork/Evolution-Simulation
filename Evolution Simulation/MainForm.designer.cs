@@ -79,7 +79,7 @@
             this.btnPlayPause = new System.Windows.Forms.Button();
             this.btnReset = new System.Windows.Forms.Button();
             this.label10 = new System.Windows.Forms.Label();
-            this.lblTickFrequency = new System.Windows.Forms.Label();
+            this.lblTpS = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
@@ -540,7 +540,7 @@
             this.tableLayoutPanel1.Controls.Add(this.lbl5, 1, 8);
             this.tableLayoutPanel1.Controls.Add(this.lbl6, 1, 9);
             this.tableLayoutPanel1.Controls.Add(this.label10, 0, 11);
-            this.tableLayoutPanel1.Controls.Add(this.lblTickFrequency, 1, 11);
+            this.tableLayoutPanel1.Controls.Add(this.lblTpS, 1, 11);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -805,20 +805,20 @@
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(202, 21);
             this.label10.TabIndex = 33;
-            this.label10.Text = "Tick Frequency:";
+            this.label10.Text = "Ticks / second:";
             this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // lblTickFrequency
+            // lblTpS
             // 
-            this.lblTickFrequency.AutoSize = true;
-            this.lblTickFrequency.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblTickFrequency.Location = new System.Drawing.Point(211, 208);
-            this.lblTickFrequency.Name = "lblTickFrequency";
-            this.lblTickFrequency.Size = new System.Drawing.Size(203, 21);
-            this.lblTickFrequency.TabIndex = 34;
-            this.lblTickFrequency.Tag = " ms";
-            this.lblTickFrequency.Text = "label11";
-            this.lblTickFrequency.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblTpS.AutoSize = true;
+            this.lblTpS.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblTpS.Location = new System.Drawing.Point(211, 208);
+            this.lblTpS.Name = "lblTpS";
+            this.lblTpS.Size = new System.Drawing.Size(203, 21);
+            this.lblTpS.TabIndex = 34;
+            this.lblTpS.Tag = " ms";
+            this.lblTpS.Text = "label11";
+            this.lblTpS.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // MainForm
             // 
@@ -938,7 +938,7 @@
         private System.Windows.Forms.Label lbl5;
         private System.Windows.Forms.Label lbl6;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Label lblTickFrequency;
+        private System.Windows.Forms.Label lblTpS;
     }
 }
 

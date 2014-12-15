@@ -18,12 +18,12 @@ namespace Evolution_Simulation
 
         private int[] _value;
 
-        private double _tickFrequency;
+        private double _tps;
 
-        public double TickFrequency
+        public double TpS   // ticks per second
         {
-            get { return _tickFrequency; }
-            set { _tickFrequency = value; lblTickFrequency.Text = _tickFrequency.ToString() + lblTickFrequency.Tag; }
+            get { return _tps; }
+            set { _tps = value; lblTpS.Text = _tps.ToString(); }
         }
 
         public int move

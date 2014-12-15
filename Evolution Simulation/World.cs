@@ -35,6 +35,7 @@ namespace Evolution_Simulation
             ResizeDisplay();
 
             _stopwatch = new System.Diagnostics.Stopwatch();
+            _stopwatch.Start();
 
             Timer = new System.Windows.Forms.Timer();
             Timer.Tick += Timer_Tick;
@@ -112,8 +113,11 @@ namespace Evolution_Simulation
                 _mainForm.updateLabelCreatureCount(Grid.Creatures.Count);
                 _mainForm.updateLabelPlantsCount(Grid.Plants.Count);
                 _mainForm.updateLabelWorldAge(_worldAge);
-                _mainForm.TickFrequency = _stopwatch.ElapsedMilliseconds / SkipInterval;
-                _stopwatch.Restart();
+                if (_stopwatch.ElapsedMilliseconds != 0)
+                {
+                    _mainForm.TpS = SkipInterval * 1000 / _stopwatch.ElapsedMilliseconds;
+                    _stopwatch.Restart();
+                }
             }
         }
 

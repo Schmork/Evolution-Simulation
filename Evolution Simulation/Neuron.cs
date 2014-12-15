@@ -22,11 +22,12 @@ namespace Evolution_Simulation
 
         public Connection[] Connections;
         public double Bias;
-        
+
         private double _value;
         public bool IsInputNeuron;
-        
-        public Neuron (Connection[] connections, double bias)
+        public bool HasValue;
+
+        public Neuron(Connection[] connections, double bias)
         {
             Connections = connections;
             Bias = bias;
@@ -37,7 +38,7 @@ namespace Evolution_Simulation
             IsInputNeuron = true;
         }
 
-        public void SetValue(double x)
+        public void SetInputValue(double x)
         {
             if (!IsInputNeuron) throw new InvalidOperationException();
             _value = Normalizer.StayInBounds(x, 5);
@@ -45,7 +46,7 @@ namespace Evolution_Simulation
 
         public double GetValue()
         {
-            if (IsInputNeuron)
+            if (IsInputNeuron || HasValue)
             {
                 return _value;
             }
@@ -56,7 +57,9 @@ namespace Evolution_Simulation
                 {
                     sum += con.Source.GetValue() * con.Weight;
                 }
-                return Normalizer.StayInBounds(sum, 1);
+                _value = Normalizer.StayInBounds(sum, 1);
+                HasValue = true;
+                return _value;
             }
         }
     }
