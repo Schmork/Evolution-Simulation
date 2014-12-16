@@ -15,24 +15,36 @@ namespace Evolution_Simulation
         private Display _display;
         private Random _rnd;
         private MainForm _mainForm;
-        private Explorer _explorer;
+        public Explorer Explorer;
         private Stopwatch _stopwatch;
 
         public static int SkipInterval, PlantsReplenishment, DeadBodyDecay, MinCreatures, MaxCreatures;
         private int _worldAge;
-        private int _punishment = 10;       // this amount of energy is substracted when creatures attempt illegal actions (like eating when there is nothing to eat, or moving when blocked)
-        public static int Horizon = 2;      // creatures can see so many pixels in three directions
+        /// <summary>
+        /// this amount of energy is substracted when creatures attempt illegal actions (like eating when there is nothing to eat, or moving when blocked)
+        /// </summary>
+        private int _punishment = 10;
+        /// <summary>
+        /// creatures can see so many pixels in three directions
+        /// </summary>
+        public static int Horizon = 3;
 
-        private Creature _trackedCreature;  // stores the answer on two questions: do we track a creature? if so, which one?
+        /// <summary>
+        /// stores the answer on two questions: do we track a creature? if so, which one?
+        /// </summary>
+        public Creature TrackedCreature;
         private XY _trackedPoint;
-        public XY TrackedPoint              // the seperate explorer window will track this point. If initialized on a Creature, TrackedPoint is meant to move with that creature.
+        /// <summary>
+        /// the seperate explorer window will track this point. If initialized on a Creature, TrackedPoint is meant to move with that creature.
+        /// </summary>
+        public XY TrackedPoint
         {
             get { return _trackedPoint; }
             set
             {
                 if (value == null)
                 {
-                    _trackedCreature = null;
+                    TrackedCreature = null;
                     _trackedPoint = null;
                 }
                 else
@@ -62,6 +74,9 @@ namespace Evolution_Simulation
             Timer.Start();
         }
 
+        /// <summary>
+        /// Main Method. This makes the world go 'round.
+        /// </summary>
         private void Timer_Tick(object sender, EventArgs e)
         {
             _worldAge++;
@@ -119,8 +134,15 @@ namespace Evolution_Simulation
                 _display.DrawAll(Grid, TrackedPoint);
                 _display.refresh();
 
-                if (_trackedCreature != null) TrackedPoint = _trackedCreature.Pos;
-                if (_explorer != null) _explorer.Actualize();
+                if (TrackedCreature != null)       // do we track a creature?
+                {
+                    if (TrackedCreature.IsAlive)   // is it still alive?
+                    {
+                        TrackedPoint = TrackedCreature.Pos;    // if so, follow it's movement.
+                    }
+                    else TrackedCreature = null;               // if it has died, stop tracking it.
+                }
+                if (Explorer != null) Explorer.Actualize();
 
                 _mainForm.updateLabelCreatureCount(Grid.Creatures.Count);
                 _mainForm.updateLabelPlantsCount(Grid.Plants.Count);
@@ -181,11 +203,14 @@ namespace Evolution_Simulation
 
         public void ResizeDisplay()
         {
-            if (Explorer.IsActive) _explorer.Close();
+            if (Explorer.IsActive) Explorer.Close();
             TrackedPoint = null;
             _display.resize(Grid, TrackedPoint);
         }
 
+        /// <summary>
+        /// Initially fills the Grid with Creatures, Plants and Lava.
+        /// </summary>
         private void populate(int creatures, int lavas)
         {
             for (int i = 0; i < creatures; i++)
@@ -203,19 +228,24 @@ namespace Evolution_Simulation
             }
         }
 
+        /// <summary>
+        /// Invoked by click. Creates a new explorer or update the existant to monitor a cell's state or movement.
+        /// </summary>
         public void SetExplorer(XY pos)
         {
             TrackedPoint = pos;
-            _trackedCreature = Grid.Get(pos) as Creature;
+            TrackedCreature = Grid.Get(pos) as Creature;
 
             if (Explorer.IsActive)
             {
-                _explorer.SetCell(pos);
+                Explorer.SetCell(pos);
             }
             else
             {
-                _explorer = new Explorer(this);
+                Explorer = new Explorer(this);
             }
+            Explorer.Actualize();
+            Explorer.BringToFront();
         }
     }
 }

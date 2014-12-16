@@ -66,6 +66,7 @@
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.IsSplitterFixed = true;
             this.splitContainer1.Location = new System.Drawing.Point(0, 0);
             this.splitContainer1.Name = "splitContainer1";
             // 
@@ -83,6 +84,7 @@
             // splitContainer2
             // 
             this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer2.IsSplitterFixed = true;
             this.splitContainer2.Location = new System.Drawing.Point(0, 0);
             this.splitContainer2.Name = "splitContainer2";
             this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
@@ -118,6 +120,7 @@
             this.pictureBoxSurrounding.Size = new System.Drawing.Size(272, 277);
             this.pictureBoxSurrounding.TabIndex = 0;
             this.pictureBoxSurrounding.TabStop = false;
+            this.pictureBoxSurrounding.Click += new System.EventHandler(this.pictureBoxSurrounding_Click);
             // 
             // tableLayoutPanel1
             // 

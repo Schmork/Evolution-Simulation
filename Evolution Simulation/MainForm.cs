@@ -88,11 +88,6 @@ namespace Evolution_Simulation
             initWorld();
         }
 
-        void pictureBox_MouseWheel(object sender, MouseEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
         private void pictureBox_SizeChanged(object sender, EventArgs e)
         {
             _world.ResizeDisplay();
@@ -123,8 +118,9 @@ namespace Evolution_Simulation
             else
             {
                 btnPlayPause.Text = "Pause";
-                _world.Timer.Start();
+                _world.Timer.Start();                
             }
+            if (Explorer.IsActive) _world.Explorer.BringToFront();
         }
 
         private void btnReset_Click(object sender, EventArgs e)
@@ -268,6 +264,9 @@ namespace Evolution_Simulation
             return ret;
         }
 
+        /// <summary>
+        /// Calls the Explorer to display details about the clicked cell.
+        /// </summary>
         private void pictureBox_Click(object sender, EventArgs e)
         {
             var p = PointToClient(MousePosition);

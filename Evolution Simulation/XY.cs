@@ -15,5 +15,12 @@ namespace Evolution_Simulation
             X = x;
             Y = y;
         }
+
+        public static XY operator +(XY a, XY b)
+        {
+            var x = a.X + b.X;
+            var y = a.Y + b.Y;
+            return new XY(x, y);
+        }
     }
 }

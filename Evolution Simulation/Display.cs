@@ -40,13 +40,16 @@ namespace Evolution_Simulation
             }
         }
 
-        private void markCell(Cell cell)
+        /// <summary>
+        /// Outlines the tracked cell for better visibility
+        /// </summary>
+        public void markCell(XY pos)
         {
-            if (cell == null) return;
-            var pen = new Pen(Color.Firebrick);
+            if (pos == null) return; 
+            var pen = new Pen(Color.Cyan);
             using (var g = Graphics.FromImage(_pictureBox.Image))
             {
-                g.DrawRectangle(pen, getRect(cell.Pos));
+                g.DrawRectangle(pen, getRect(pos));
             }
         }
 
@@ -90,7 +93,7 @@ namespace Evolution_Simulation
             drawPlants(grid.Plants);
             drawDeadBodies(grid.DeadBodies);
             drawLava(grid.Lavas);
-            if (trackedPoint != null) markCell(grid.Get(trackedPoint));
+            markCell(trackedPoint);
             refresh();
         }
 

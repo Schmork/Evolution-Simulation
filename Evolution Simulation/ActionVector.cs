@@ -31,7 +31,6 @@ namespace Evolution_Simulation
             if (Stay) mainForm.stay++;
             if (Eat) mainForm.eat++;
             if (Split) mainForm.split++;
-            var z = 5;
         }
     }
 }

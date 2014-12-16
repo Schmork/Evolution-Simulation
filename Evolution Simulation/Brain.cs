@@ -14,10 +14,22 @@ namespace Evolution_Simulation
         public static double MaxFactor = 5;
         public static double MaxWeight = 5;
         public static double MutationChance, MutationChange;
-        public static int Layers = 3;
-        public static int InputNeurons = World.Horizon * 12 + 2;    // horizon * 3 directions * 4 cell types + energy + age
-        private static int _neuronsPerLayer = 20;
-        private static int _outputNeuronsCount = typeof(ActionVector).GetFields().Count();
+        /// <summary>
+        /// Number of layers *in addition* to the input layer. Layers = 2 results in 3 layers: input, web and output. Web + output = 2
+        /// </summary>
+        public static int LayerCount = 3;
+        /// <summary>
+        /// Number of 0-level neurons, which do not get input from other neurons.
+        /// </summary>
+        public static int InputNeuronsCount = World.Horizon * 12 + 2;    // horizon * 3 directions * 4 cell types + energy + age
+        /// <summary>
+        /// Number of neurons a web layer has.
+        /// </summary>
+        public static int NeuronsPerLayerCount = 20;
+        /// <summary>
+        /// Number of output neurons.
+        /// </summary>
+        public static int OutputNeuronsCount = typeof(ActionVector).GetFields().Count();
         public static int ChanceDivisor = 100000;
         public static double ChangeFactor = 0.001;
 
@@ -25,7 +37,7 @@ namespace Evolution_Simulation
 
         public Brain(Random rnd, Brain brain)
         {
-            Neurons = new Neuron[Layers + 1][];
+            Neurons = new Neuron[LayerCount + 1][];
             _rnd = rnd;
             createNetwork(brain);
         }
@@ -33,11 +45,11 @@ namespace Evolution_Simulation
         private void createNetwork(Brain brain)
         {
             createInputLayer();
-            for (int layer = 1; layer < Layers; layer++)
+            for (int layer = 1; layer < LayerCount; layer++)
             {
                 if (brain == null)
                 {
-                    createWebLayer(layer, _neuronsPerLayer);
+                    createWebLayer(layer, NeuronsPerLayerCount);
                 }
                 else
                 {
@@ -47,18 +59,18 @@ namespace Evolution_Simulation
 
             if (brain == null)
             {
-                createWebLayer(Layers, _outputNeuronsCount);
+                createWebLayer(LayerCount, OutputNeuronsCount);
             }
             else
             {
-                mutateLayer(Layers, brain);
+                mutateLayer(LayerCount, brain);
             }
         }
 
         private void createInputLayer()
         {
-            Neurons[0] = new Neuron[InputNeurons];
-            for (int i = 0; i < InputNeurons; i++)
+            Neurons[0] = new Neuron[InputNeuronsCount];
+            for (int i = 0; i < InputNeuronsCount; i++)
             {
                 Neurons[0][i] = new Neuron();
             }
@@ -134,6 +146,9 @@ namespace Evolution_Simulation
             return x;
         }
 
+        /// <summary>
+        /// Updates values of InputNeurons and resets all other neurons.
+        /// </summary>
         public void UpdateInputs(InputVector inputVector)
         {
             for (int i = 0; i < inputVector.InputsForBrain.Length; i++)
@@ -143,21 +158,28 @@ namespace Evolution_Simulation
             resetValues();
         }
 
+        /// <summary>
+        /// Sets .HasValue of each neuron to false, in preparation for the next run.
+        /// </summary>
         private void resetValues()
         {
             for (int i = 1; i < Neurons.Length; i++)        // skip InputNeuron Layer
             {
                 foreach (var neuron in Neurons[i])
                 {
-                    neuron.HasValue = false;                    
+                    neuron.HasValue = false;
                 }
             }
+            this.GetOutput();
         }
 
+        /// <summary>
+        /// Calculates all required neuron values. Returns values of output layer
+        /// </summary>
         public double[] GetOutput()
         {
             var outputNeurons = Neurons[Neurons.Length - 1];
-            var outputs = new double[_outputNeuronsCount];
+            var outputs = new double[OutputNeuronsCount];
 
             for (int i = 0; i < outputs.Count(); i++)
             {
@@ -197,7 +219,6 @@ namespace Evolution_Simulation
                     }
                 }
             }
-            var z = 5;
             return dist;
         }
     }

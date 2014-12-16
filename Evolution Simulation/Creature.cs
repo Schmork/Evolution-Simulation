@@ -99,6 +99,9 @@ namespace Evolution_Simulation
             return new ActionVector(_brain.GetOutput(), _rnd, mainForm);
         }
 
+        /// <summary>
+        /// Calculates a creature's color based on Energy (more = brighter) and Diet (more plants = blue, more meat = red).
+        /// </summary>
         public System.Drawing.Color GetColor()
         {
             var max = 255;
