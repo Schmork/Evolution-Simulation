@@ -12,39 +12,29 @@ namespace Evolution_Simulation
 {
     public partial class Explorer : Form
     {
-        public Cell TargetCell;
         public static bool IsActive;
+        private World _world;
         private Display _display;
         private String _title = "Explorer - ";
         private int _horizon;
 
-        public Explorer(Cell cell)
+        public Explorer(World world)
         {
-            initExplorer();
-            SetCell(cell);
-        }
-
-        public Explorer(XY pos)
-        {
-            initExplorer();
-            SetCell(pos);
-        }
-        
-        private void initExplorer()
-        {
+            IsActive = true;
             InitializeComponent();
+            _world = world;
             _horizon = World.Horizon * 2;
             resetLabels();
             _display = new Display(_horizon * 2 + 1, _horizon * 2 + 1, pictureBoxSurrounding);
             Show();
         }
         
-        public void SetCell(Cell cell)
+        private void SetCell(Cell cell)
         {
-            resetLabels();
             if (cell == null) return;
+
             SetCell(cell.Pos);
-            TargetCell = cell;
+            #region label display logic
             if (cell.GetType() == typeof(Creature))
             {
                 var creature = (Creature)cell;
@@ -71,11 +61,11 @@ namespace Evolution_Simulation
                 var lava = (Lava)cell;
                 Text = _title + lava.GetType().Name;
             }
+            #endregion
         }
 
         public void SetCell(XY pos)
         {
-            TargetCell = null;
             resetLabels();
             lblPosX.Text = pos.X.ToString();
             lblPosY.Text = pos.Y.ToString();
@@ -94,24 +84,28 @@ namespace Evolution_Simulation
         private void Explorer_FormClosed(object sender, FormClosedEventArgs e)
         {
             IsActive = false;
+            _world.TrackedPoint = null;
         }
 
-        public void Update(Cell target, Grid grid)
+        public void Actualize()
         {
+            if (!IsActive) return;
+
             resetLabels();
-            if (target != null)
+            if (_world.TrackedPoint != null)
             {
-                SetCell(target);
+                var trackedPos = _world.TrackedPoint;
+                SetCell(_world.Grid.Get(trackedPos));
 
                 _display.Clear();
                 for (int dx = -_horizon; dx <= +_horizon; dx++)
                 {
                     for (int dy = -_horizon; dy <= +_horizon; dy++)
                     {
-                        var x = target.Pos.X + dx;
-                        var y = target.Pos.Y + dy;
+                        var x = trackedPos.X + dx;
+                        var y = trackedPos.Y + dy;
                         var pos = Normalizer.WrapWorld(new XY(x, y));
-                        var cell = grid.Get(pos);
+                        var cell = _world.Grid.Get(pos);
 
                         var color = (cell == null) ? pictureBoxSurrounding.BackColor : cell.Color;
 

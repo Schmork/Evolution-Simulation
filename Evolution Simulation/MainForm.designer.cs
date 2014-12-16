@@ -75,11 +75,11 @@
             this.label9 = new System.Windows.Forms.Label();
             this.lbl5 = new System.Windows.Forms.Label();
             this.lbl6 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.lblTpS = new System.Windows.Forms.Label();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.btnPlayPause = new System.Windows.Forms.Button();
             this.btnReset = new System.Windows.Forms.Button();
-            this.label10 = new System.Windows.Forms.Label();
-            this.lblTpS = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
@@ -315,7 +315,7 @@
             // 
             this.trBarPlantsEnergy.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.trBarPlantsEnergy.LargeChange = 500;
+            this.trBarPlantsEnergy.LargeChange = 50;
             this.trBarPlantsEnergy.Location = new System.Drawing.Point(7, 20);
             this.trBarPlantsEnergy.Maximum = 500;
             this.trBarPlantsEnergy.Name = "trBarPlantsEnergy";
@@ -341,7 +341,7 @@
             // 
             this.trBarPlantsReplenishment.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.trBarPlantsReplenishment.LargeChange = 50;
+            this.trBarPlantsReplenishment.LargeChange = 10;
             this.trBarPlantsReplenishment.Location = new System.Drawing.Point(7, 20);
             this.trBarPlantsReplenishment.Maximum = 50;
             this.trBarPlantsReplenishment.Name = "trBarPlantsReplenishment";
@@ -758,6 +758,29 @@
             this.lbl6.Text = "label11";
             this.lbl6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label10.Location = new System.Drawing.Point(3, 208);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(202, 21);
+            this.label10.TabIndex = 33;
+            this.label10.Text = "Ticks / second:";
+            this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblTpS
+            // 
+            this.lblTpS.AutoSize = true;
+            this.lblTpS.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblTpS.Location = new System.Drawing.Point(211, 208);
+            this.lblTpS.Name = "lblTpS";
+            this.lblTpS.Size = new System.Drawing.Size(203, 21);
+            this.lblTpS.TabIndex = 34;
+            this.lblTpS.Tag = " ms";
+            this.lblTpS.Text = "label11";
+            this.lblTpS.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -796,29 +819,6 @@
             this.btnReset.Text = "Reset";
             this.btnReset.UseVisualStyleBackColor = true;
             this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label10.Location = new System.Drawing.Point(3, 208);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(202, 21);
-            this.label10.TabIndex = 33;
-            this.label10.Text = "Ticks / second:";
-            this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblTpS
-            // 
-            this.lblTpS.AutoSize = true;
-            this.lblTpS.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblTpS.Location = new System.Drawing.Point(211, 208);
-            this.lblTpS.Name = "lblTpS";
-            this.lblTpS.Size = new System.Drawing.Size(203, 21);
-            this.lblTpS.TabIndex = 34;
-            this.lblTpS.Tag = " ms";
-            this.lblTpS.Text = "label11";
-            this.lblTpS.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // MainForm
             // 

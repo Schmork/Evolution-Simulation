@@ -3,24 +3,44 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics; // for stopwatch
+using System.Windows.Forms; // for timer
 
 namespace Evolution_Simulation
 {
-    class World
+    public class World
     {
-        public System.Windows.Forms.Timer Timer;
+        public Timer Timer;
         public Grid Grid;
         private Display _display;
         private Random _rnd;
         private MainForm _mainForm;
         private Explorer _explorer;
-        private System.Diagnostics.Stopwatch _stopwatch;
-        public static Cell MonitoredCell;
+        private Stopwatch _stopwatch;
 
         public static int SkipInterval, PlantsReplenishment, DeadBodyDecay, MinCreatures, MaxCreatures;
         private int _worldAge;
         private int _punishment = 10;       // this amount of energy is substracted when creatures attempt illegal actions (like eating when there is nothing to eat, or moving when blocked)
         public static int Horizon = 2;      // creatures can see so many pixels in three directions
+
+        private Creature _trackedCreature;  // stores the answer on two questions: do we track a creature? if so, which one?
+        private XY _trackedPoint;
+        public XY TrackedPoint              // the seperate explorer window will track this point. If initialized on a Creature, TrackedPoint is meant to move with that creature.
+        {
+            get { return _trackedPoint; }
+            set
+            {
+                if (value == null)
+                {
+                    _trackedCreature = null;
+                    _trackedPoint = null;
+                }
+                else
+                {
+                    _trackedPoint = value;
+                }
+            }
+        }
 
         public World(int width, int height, Display display, Random rnd, MainForm mainForm)
         {
@@ -34,10 +54,10 @@ namespace Evolution_Simulation
             populate(MinCreatures, 0);
             ResizeDisplay();
 
-            _stopwatch = new System.Diagnostics.Stopwatch();
+            _stopwatch = new Stopwatch();
             _stopwatch.Start();
 
-            Timer = new System.Windows.Forms.Timer();
+            Timer = new Timer();
             Timer.Tick += Timer_Tick;
             Timer.Start();
         }
@@ -89,16 +109,6 @@ namespace Evolution_Simulation
             Grid.RemoveDeadPlants();
             Grid.RemoveRottenCorpses();
 
-            if (MonitoredCell != null &&
-                (MonitoredCell.GetType() == typeof(Creature) ||
-                MonitoredCell.GetType() == typeof(DeadBody) ||
-                MonitoredCell.GetType() == typeof(Plant))
-                && Grid.Get(MonitoredCell.Pos) == null)
-            {
-                _explorer.SetCell(MonitoredCell.Pos);
-                MonitoredCell = null;
-            }
-
             for (int n = 0; n < PlantsReplenishment; n++) Grid.Add(typeof(Plant));
             while (Grid.Creatures.Count < MinCreatures
                 && Grid.Creatures.Count < MaxCreatures) Grid.Add(typeof(Creature));
@@ -106,9 +116,11 @@ namespace Evolution_Simulation
             if (_worldAge % SkipInterval == 0)
             {
                 _display.Clear();
-                _display.DrawAll(Grid);
+                _display.DrawAll(Grid, TrackedPoint);
                 _display.refresh();
-                if (Explorer.IsActive) _explorer.Update(MonitoredCell, Grid);
+
+                if (_trackedCreature != null) TrackedPoint = _trackedCreature.Pos;
+                if (_explorer != null) _explorer.Actualize();
 
                 _mainForm.updateLabelCreatureCount(Grid.Creatures.Count);
                 _mainForm.updateLabelPlantsCount(Grid.Plants.Count);
@@ -170,8 +182,8 @@ namespace Evolution_Simulation
         public void ResizeDisplay()
         {
             if (Explorer.IsActive) _explorer.Close();
-            MonitoredCell = null;
-            _display.resize(Grid);
+            TrackedPoint = null;
+            _display.resize(Grid, TrackedPoint);
         }
 
         private void populate(int creatures, int lavas)
@@ -193,34 +205,17 @@ namespace Evolution_Simulation
 
         public void SetExplorer(XY pos)
         {
-            var cell = Grid.Get(pos);
+            TrackedPoint = pos;
+            _trackedCreature = Grid.Get(pos) as Creature;
 
-            if (cell == null)
+            if (Explorer.IsActive)
             {
-                if (!Explorer.IsActive)
-                {
-                    _explorer = new Explorer(pos);
-                }
-                else
-                {
-                    _explorer.SetCell(pos);
-                }
-                MonitoredCell = new Cell();
-                MonitoredCell.Pos = pos;
+                _explorer.SetCell(pos);
             }
             else
             {
-                if (!Explorer.IsActive)
-                {
-                    _explorer = new Explorer(cell);
-                }
-                else
-                {
-                    _explorer.SetCell(cell);
-                }
-                MonitoredCell = cell;
+                _explorer = new Explorer(this);
             }
-            Explorer.IsActive = true;
         }
     }
 }

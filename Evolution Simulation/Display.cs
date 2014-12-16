@@ -8,7 +8,7 @@ using System.Drawing;
 
 namespace Evolution_Simulation
 {
-    class Display
+    public class Display
     {
         private int _cellMargin = 1;
         private int _worldMargin = 3;
@@ -84,13 +84,13 @@ namespace Evolution_Simulation
             _pictureBox.Image = new Bitmap(_pictureBox.Width, _pictureBox.Height);
         }
 
-        public void DrawAll(Grid grid)
+        public void DrawAll(Grid grid, XY trackedPoint)
         {
             drawCreatures(grid.Creatures);
             drawPlants(grid.Plants);
             drawDeadBodies(grid.DeadBodies);
             drawLava(grid.Lavas);
-            markCell(World.MonitoredCell);
+            if (trackedPoint != null) markCell(grid.Get(trackedPoint));
             refresh();
         }
 
@@ -131,11 +131,11 @@ namespace Evolution_Simulation
             _pictureBox.Refresh();
         }
 
-        public void resize(Grid grid)
+        public void resize(Grid grid, XY trackedPoint)
         {
             _pictureBox.Image = new Bitmap(_pictureBox.Width, _pictureBox.Height);
             _scale = getScale(_pictureBox.Width, _pictureBox.Height, Grid.Width, Grid.Height);
-            DrawAll(grid);
+            DrawAll(grid, trackedPoint);
             refresh();
         }
     }
