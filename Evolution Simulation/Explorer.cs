@@ -73,7 +73,7 @@ namespace Evolution_Simulation
 
         private void resetLabels()
         {
-            Text = _title + "null";
+            Text = _title + "empty Cell";
             lblAge.Text = lblAge.Tag.ToString();
             lblEnergy.Text = lblEnergy.Tag.ToString();
             lblDiet.Text = lblDiet.Tag.ToString();
@@ -134,42 +134,65 @@ namespace Evolution_Simulation
 
         private void drawBrain(Creature creature)
         {
+            pictureBoxBrain.Image = new Bitmap(pictureBoxBrain.Width, pictureBoxBrain.Height);
             if (creature == null) return;
 
             var layerCount = Brain.LayerCount + 1;
             var nodes = new Rectangle[layerCount][];
-            var inputNodes = new Rectangle[Brain.InputNeuronsCount];
+
+            var defaultX = 9;
+
+            var y = 10;
+            var x = defaultX;
+
+            var height = defaultX * 5 / 2;
+            var width = height;
+
+            var layerGap = (pictureBoxBrain.Height - height * layerCount) / layerCount;
+
+            var length = Brain.InputNeuronsCount;
+            var inputNodes = new Rectangle[length];
+            var neuronGap = (pictureBoxBrain.Width - width * length) / (length + 2);
+
+            for (int i = 0; i < length; i++)
+            {
+                inputNodes[i] = new Rectangle(x, y, width, height);
+                x += width + neuronGap;
+            }
             nodes[0] = inputNodes;
 
             for (int i = 0; i < Brain.LayerCount; i++)
             {
-                var webNodes = new Rectangle[Brain.NeuronsPerLayerCount];
+                x = defaultX;
+                y += height + layerGap;
+
+                length = Brain.NeuronsPerLayerCount;
+                var webNodes = new Rectangle[length];
+                neuronGap = (pictureBoxBrain.Width - width * length) / (length + 2);
+                for (int j = 0; j < length; j++)
+                {
+                    webNodes[j] = new Rectangle(x, y, width, height);
+                    x += width + neuronGap;
+                }
                 nodes[i + 1] = webNodes;
             }
 
-            var outputNodes = new Rectangle[Brain.OutputNeuronsCount];
+            //y += height + layerGap;
+            x = defaultX;
+            length = Brain.OutputNeuronsCount;
+            var outputNodes = new Rectangle[length];
+            neuronGap = (pictureBoxBrain.Width - width * length) / (length + 2);
+            for (int i = 0; i < length; i++)
+            {
+                outputNodes[i] = new Rectangle(x, y, width, height);
+                x += width + neuronGap;
+            }
             nodes[layerCount - 1] = outputNodes;
-
-            pictureBoxBrain.Image = new Bitmap(pictureBoxBrain.Width, pictureBoxBrain.Height);
-
-            var layerGap = pictureBoxBrain.Height / (layerCount * 3 / 2 + (layerCount - 1));
-            var height = layerGap * 3 / 2;
-
-            var y = 10;
 
             for (int layer = 0; layer < layerCount; layer++)
             {
-                var neuronGap = pictureBoxBrain.Width / (layerCount * 3 / 2 + (layerCount - 1));
-                var width = neuronGap * 3 / 2;
-
-                y += height + layerGap;
-
-                var x = 10;
-
                 for (int neuron = 0; neuron < nodes[layer].Length; neuron++)
                 {
-                    x += width + neuronGap;
-
                     using (var g = Graphics.FromImage(pictureBoxBrain.Image))
                     {
                         var pen = new Pen(Color.Gray);

@@ -582,6 +582,7 @@
             this.lbl2.TabIndex = 23;
             this.lbl2.Text = "label9";
             this.lbl2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lbl2.Visible = false;
             // 
             // lbl1
             // 
@@ -593,6 +594,7 @@
             this.lbl1.TabIndex = 22;
             this.lbl1.Text = "label8";
             this.lbl1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lbl1.Visible = false;
             // 
             // label4
             // 
@@ -604,6 +606,7 @@
             this.label4.TabIndex = 13;
             this.label4.Text = "move";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.label4.Visible = false;
             // 
             // label1
             // 
@@ -670,6 +673,7 @@
             this.label5.TabIndex = 19;
             this.label5.Text = "right";
             this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.label5.Visible = false;
             // 
             // label6
             // 
@@ -681,6 +685,7 @@
             this.label6.TabIndex = 24;
             this.label6.Text = "eat";
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.label6.Visible = false;
             // 
             // label7
             // 
@@ -692,6 +697,7 @@
             this.label7.TabIndex = 25;
             this.label7.Text = "left";
             this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.label7.Visible = false;
             // 
             // lbl3
             // 
@@ -703,6 +709,7 @@
             this.lbl3.TabIndex = 26;
             this.lbl3.Text = "label10";
             this.lbl3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lbl3.Visible = false;
             // 
             // lbl4
             // 
@@ -714,6 +721,7 @@
             this.lbl4.TabIndex = 27;
             this.lbl4.Text = "label11";
             this.lbl4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lbl4.Visible = false;
             // 
             // label8
             // 
@@ -725,6 +733,7 @@
             this.label8.TabIndex = 29;
             this.label8.Text = "split";
             this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.label8.Visible = false;
             // 
             // label9
             // 
@@ -736,6 +745,7 @@
             this.label9.TabIndex = 30;
             this.label9.Text = "stay";
             this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.label9.Visible = false;
             // 
             // lbl5
             // 
@@ -747,6 +757,7 @@
             this.lbl5.TabIndex = 31;
             this.lbl5.Text = "label10";
             this.lbl5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lbl5.Visible = false;
             // 
             // lbl6
             // 
@@ -758,6 +769,7 @@
             this.lbl6.TabIndex = 32;
             this.lbl6.Text = "label11";
             this.lbl6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lbl6.Visible = false;
             // 
             // label10
             // 
@@ -829,7 +841,7 @@
             this.ClientSize = new System.Drawing.Size(1471, 1026);
             this.Controls.Add(this.splitContainer);
             this.Name = "MainForm";
-            this.Text = "Neurolution";
+            this.Text = "Neurolution - a simulation of neuronal networks and evolution";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.SizeChanged += new System.EventHandler(this.MainForm_SizeChanged);
             this.splitContainer.Panel1.ResumeLayout(false);

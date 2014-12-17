@@ -27,7 +27,7 @@ namespace Evolution_Simulation
         /// <summary>
         /// creatures can see so many pixels in three directions
         /// </summary>
-        public static int Horizon = 3;
+        public static int Horizon = 2;
 
         /// <summary>
         /// stores the answer on two questions: do we track a creature? if so, which one?

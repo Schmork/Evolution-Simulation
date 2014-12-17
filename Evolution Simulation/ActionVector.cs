@@ -25,12 +25,12 @@ namespace Evolution_Simulation
             var fields = this.GetType().GetFields().OrderBy(x => x.Name);
             fields.ElementAt(n).SetValue(this, true);                           // set n-th action := true (others remain false)
 
-            if (Left) mainForm.left++;
+            /*if (Left) mainForm.left++;
             if (Right) mainForm.right++;
             if (Move) mainForm.move++;
             if (Stay) mainForm.stay++;
             if (Eat) mainForm.eat++;
-            if (Split) mainForm.split++;
+            if (Split) mainForm.split++;*/
         }
     }
 }
