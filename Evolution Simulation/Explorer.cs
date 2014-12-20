@@ -117,7 +117,7 @@ namespace Evolution_Simulation
                     {
                         var x = trackedPos.X + dx;
                         var y = trackedPos.Y + dy;
-                        var pos = Normalizer.WrapWorld(new XY(x, y));
+                        var pos = Transform.WrapWorld(new XY(x, y));
                         var cell = _world.Grid.Get(pos);
 
                         var color = (cell == null) ? pictureBoxSurrounding.BackColor : cell.Color;
@@ -125,7 +125,22 @@ namespace Evolution_Simulation
                         _display.fillCell(new XY(dx + _horizon, dy + _horizon), color);
                     }
                 }
-                _display.markCell(new XY(_horizon, _horizon));
+                _display.markCell(new XY(_horizon, _horizon));  // mark the center
+
+                var c = trackedCell as Creature;
+                if (c != null)  // is it a creature?
+                {
+                    for (int s = 0; s < _horizon; s++)
+                    {
+                        var ahead = c.GetNextPos(s) - c.Pos;
+                        var left = c.GetNextPos(c.Direction - 1, s) - c.Pos;
+                        var right = c.GetNextPos(c.Direction + 1, s) - c.Pos;
+                        _display.markCell(new XY(ahead.X + _horizon, ahead.Y + _horizon));
+                        _display.markCell(new XY(left.X + _horizon, left.Y + _horizon));
+                        _display.markCell(new XY(right.X + _horizon, right.Y + _horizon));
+                    }
+                }
+                
                 _display.refresh();
 
                 drawBrain(_world.TrackedCreature);
@@ -207,7 +222,7 @@ namespace Evolution_Simulation
             var p = PointToClient(MousePosition);
             var xy = _display.fromDisplayToWorld(p) + _world.TrackedPoint;
             xy += new XY(-_horizon, -_horizon);
-            xy = Normalizer.WrapWorld(xy);
+            xy = Transform.WrapWorld(xy);
             _world.SetExplorer(xy);
         }
     }

@@ -66,11 +66,17 @@
     <Compile Include="MainForm.designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Normalizer.cs" />
+    <Compile Include="Transform.cs" />
     <Compile Include="Plant.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Neuron.cs" />
+    <Compile Include="PopulationDynamicsGraph.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PopulationDynamicsGraph.Designer.cs">
+      <DependentUpon>PopulationDynamicsGraph.cs</DependentUpon>
+    </Compile>
     <Compile Include="World.cs" />
     <Compile Include="XY.cs" />
     <EmbeddedResource Include="Explorer.resx">
@@ -88,8 +94,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="ClassDiagram1.cd" />
-    <None Include="ClassDiagram2.cd" />
+    <EmbeddedResource Include="PopulationDynamicsGraph.resx">
+      <DependentUpon>PopulationDynamicsGraph.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

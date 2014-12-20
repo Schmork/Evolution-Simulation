@@ -125,12 +125,12 @@ namespace Evolution_Simulation
 
             for (int n = 0; n < length; n++)
             {
-                var weight = Normalizer.StayInBounds(
+                var weight = Transform.StayInBounds(
                             webNeuron.Connections[n].Weight
                             + mutate(chance, MaxWeight), MaxWeight);
                 connections[n] = new Neuron.Connection(prevLayer[n], weight);
             }
-            var bias = Normalizer.StayInBounds(
+            var bias = Transform.StayInBounds(
                         webNeuron.Bias + mutate(chance, change), MaxOffset);
 
             return new Neuron(connections, bias);

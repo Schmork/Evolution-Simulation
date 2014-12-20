@@ -41,7 +41,7 @@ namespace Evolution_Simulation
 
             Pos = pos;
             _rnd = rnd;
-            Color = GetColor();
+            Color = GetColor(Energy, Diet);
         }
 
         public void Eat(LivingCell food) 
@@ -74,7 +74,7 @@ namespace Evolution_Simulation
 
                 Energy += food.Energy;
                 food.IsAlive = false;
-                Diet = Normalizer.StayBelow(Diet, 100);
+                Diet = Transform.StayBelow(Diet, 100);
             }
         }
 
@@ -102,12 +102,12 @@ namespace Evolution_Simulation
         /// <summary>
         /// Calculates a creature's color based on Energy (more = brighter) and Diet (more plants = blue, more meat = red).
         /// </summary>
-        public System.Drawing.Color GetColor()
+        public static System.Drawing.Color GetColor(int energy, int diet)
         {
             var max = 255;
-            var blue = Diet * max / 100;
-            var red = (100 - Diet) * max / 100;
-            var alpha = Energy / 2 + 40;
+            var blue = diet * max / 100;
+            var red = (100 - diet) * max / 100;
+            var alpha = energy / 2 + 40;
             if (alpha > max) alpha = max;
             if (alpha < 70) alpha = 70;
             return System.Drawing.Color.FromArgb(alpha, red, 0, blue);

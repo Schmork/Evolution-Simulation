@@ -8,17 +8,38 @@ namespace Evolution_Simulation
 {
     public class Grid
     {
+        /// <summary>
+        /// List of all creatures. They eat plants, move, split, have brains, do stuff or don't, and eventually die.
+        /// </summary>
         public List<Creature> Creatures;
+        /// <summary>
+        /// List of all plants. They're constantly replenished based on "Plants added per tick", have some energy, and get eaten by creatures.
+        /// </summary>
         public List<Plant> Plants;
+        /// <summary>
+        /// List of all lava tiles. Lava is static, cannot be created or destroyed, and kills Creatures instantly.
+        /// </summary>
         public List<Lava> Lavas;
+        /// <summary>
+        /// List of all dead bodies. If DeadBodyCount > 0, dying creatures become dead bodys instead of simply vanishing. Dead bodies decay over time and take energy when eaten (opposite of plants, which give energy)
+        /// </summary>
         public List<DeadBody> DeadBodies;
-
+        
+        /// <summary>
+        /// Array of all cells or tiles of this world. Each can be empty (= null), a creature, a plant, a lava or a dead body.
+        /// </summary>
         public Cell[,] Cells;
 
+        /// <summary>
+        /// Dimensions of this 2-dimensional world.
+        /// </summary>
         public static int Width, Height;
 
         private Random _rnd;
-        private int _maxAttempts = 30;          // how many times to try to random a free point
+        /// <summary>
+        /// When searching for an unoccupied cell, this is the maximum of attempts to find one.
+        /// </summary>
+        private int _maxAttempts = 30;
 
         public Grid(int width, int height, Random rnd)
         {
@@ -204,20 +225,20 @@ namespace Evolution_Simulation
             return null;
         }
 
+        /// <summary>
+        /// returns the position which is >range< cells away from >pos<, in direction >dir<. 
+        /// </summary>
         public static XY directionToXY(XY pos, int dir, int range)
         {
-            int dx = 0, dy = 0;
+            var d = new XY(0, 0);
             switch (dir)
             {
-                case 0: dy = -range; break;
-                case 1: dx = +range; break;
-                case 2: dy = +range; break;
-                case 3: dx = -range; break;
+                case 0: d.Y = -range; break;
+                case 1: d.X = +range; break;
+                case 2: d.Y = +range; break;
+                case 3: d.X = -range; break;
             }
-            var x = pos.X + dx;
-            var y = pos.Y + dy;
-
-            return Normalizer.WrapWorld(new XY(x, y));
+            return Transform.WrapWorld(pos + d);
         }
     }
 }

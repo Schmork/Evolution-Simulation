@@ -15,76 +15,31 @@ namespace Evolution_Simulation
         private Display _display;
         private World _world;
         private Random _rnd;
-
+        public PopulationDynamicsGraph PopGraph;
+        
+        #region Write-only properties for displaying text
         private int[] _value;
-
         private double _tps;
-
-        public double TpS   // ticks per second
-        {
-            get { return _tps; }
-            set { _tps = value; lblTpS.Text = _tps.ToString(); }
-        }
-
-        public int move
-        {
-            get { return _value[0]; }
-            set { _value[0] = value; lbl1.Text = _value[0].ToString(); }
-        }
-        public int right
-        {
-            get { return _value[1]; }
-            set
-            {
-                _value[1] = value;
-                lbl2.Text = _value[1].ToString();
-            }
-        }
-        public int eat
-        {
-            get { return _value[2]; }
-            set
-            {
-                _value[2] = value;
-                lbl3.Text = _value[2].ToString();
-            }
-        }
-        public int left
-        {
-            get { return _value[3]; }
-            set
-            {
-                _value[3] = value;
-                lbl4.Text = _value[3].ToString();
-            }
-        }
-        public int split
-        {
-            get { return _value[4]; }
-            set
-            {
-                _value[4] = value;
-                lbl5.Text = _value[4].ToString();
-            }
-        }
-
-        public int stay
-        {
-            get { return _value[5]; }
-            set
-            {
-                _value[5] = value;
-                lbl6.Text = _value[5].ToString();
-            }
-        }
+        public double TpS { set { _tps = value; lblTpS.Text = _tps.ToString(); } }
+        public int move { set { _value[0] = value; lbl1.Text = _value[0].ToString(); } }
+        public int right { set { _value[1] = value; lbl2.Text = _value[1].ToString(); } }
+        public int eat { set { _value[2] = value; lbl3.Text = _value[2].ToString(); } }
+        public int left { set { _value[3] = value; lbl4.Text = _value[3].ToString(); } }
+        public int split { set { _value[4] = value; lbl5.Text = _value[4].ToString(); } }
+        public int stay { set { _value[5] = value; lbl6.Text = _value[5].ToString(); } }
+        #endregion
 
         public MainForm()
         {
             InitializeComponent();
             _value = new int[6];
-
             _rnd = new Random();
             _display = new Display(trBarWidth.Value, trBarHeight.Value, pictureBox);
+            
+            PopGraph = new PopulationDynamicsGraph();
+            grpBoxPopulationDynamics.Controls.Add(PopGraph);
+            PopGraph.Dock = DockStyle.Fill;            
+
             initWorld();
         }
 
@@ -93,19 +48,9 @@ namespace Evolution_Simulation
             _world.ResizeDisplay();
         }
 
-        internal void updateLabelCreatureCount(int value)
-        {
-            lblCreatureCount.Text = value.ToString();
-        }
-
-        internal void updateLabelWorldAge(int value)
+        internal void updateLabelWorldAge(long value)
         {
             lblWorldAge.Text = value.ToString();
-        }
-
-        internal void updateLabelPlantsCount(int value)
-        {
-            lblPlantsCount.Text = value.ToString();
         }
 
         private void btnPlayPause_Click(object sender, EventArgs e)
@@ -206,13 +151,8 @@ namespace Evolution_Simulation
             _world = new World(trBarWidth.Value, trBarHeight.Value, _display, _rnd, this);
             _world.Timer.Interval = getTimerInterval();
 
-            var dummyPlant = Plant.Create(new XY(0, 0));
-            grpBoxPlants.BackColor = ControlPaint.Light(dummyPlant.Color, 50);
-
-            var dummyCreature = new Creature(new XY(0, 0), _rnd);
-            dummyCreature.Diet = 100;
-            dummyCreature.Color = dummyCreature.GetColor();
-            grpBoxCreatures.BackColor = ControlPaint.Light(dummyCreature.Color, 70);
+            grpBoxPlants.BackColor = ControlPaint.Light(Cell.StandardColor(typeof(Plant)), 50);
+            grpBoxCreatures.BackColor = ControlPaint.Light(Creature.GetColor(1000, 100), 70);
         }
 
         private void updateText()
@@ -238,7 +178,7 @@ namespace Evolution_Simulation
             var middle = trBarSpeed.Maximum - trBarSpeed.Maximum / 2;
 
             var delay = middle - speed - 1;
-            return pseudoLog(delay);
+            return Transform.PseudoLog(delay);
         }
 
         private int getSkipInterval()
@@ -247,23 +187,14 @@ namespace Evolution_Simulation
             var middle = trBarSpeed.Maximum - trBarSpeed.Maximum / 2;
 
             var skip = speed - middle;
-            return pseudoLog(skip);
+            return Transform.PseudoLog(skip);
         }
 
         private void MainForm_SizeChanged(object sender, EventArgs e)
         {
             if (this.WindowState != FormWindowState.Minimized) splitContainer.SplitterDistance = this.Width - 220;
         }
-
-        private int pseudoLog(int value)
-        {
-            if (value <= 1) return 1;
-            var factor = (value / 5) * 0.1;
-            int ret = (int)(factor * value);
-            if (ret < 1) ret = 1;
-            return ret;
-        }
-
+        
         /// <summary>
         /// Calls the Explorer to display details about the clicked cell.
         /// </summary>

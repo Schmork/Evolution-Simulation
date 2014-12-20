@@ -41,7 +41,7 @@ namespace Evolution_Simulation
         public void SetInputValue(double x)
         {
             if (!IsInputNeuron) throw new InvalidOperationException();
-            _value = Normalizer.StayInBounds(x, 5);
+            _value = Transform.StayInBounds(x, 5);
         }
 
         public double GetValue()
@@ -57,7 +57,7 @@ namespace Evolution_Simulation
                 {
                     sum += con.Source.GetValue() * con.Weight;
                 }
-                _value = Normalizer.StayInBounds(sum, 1);
+                _value = Transform.StayInBounds(sum, 1);
                 HasValue = true;
                 return _value;
             }

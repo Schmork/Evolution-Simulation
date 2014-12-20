@@ -17,7 +17,7 @@ namespace Evolution_Simulation
             Color = StandardColor(GetType());
         }
 
-        private static Color StandardColor(Type type)
+        public static Color StandardColor(Type type)
         {
             if (type == typeof(Plant)) return Color.Green;
             if (type == typeof(Creature)) return Color.Magenta;

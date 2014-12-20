@@ -19,7 +19,7 @@ namespace Evolution_Simulation
         private Stopwatch _stopwatch;
 
         public static int SkipInterval, PlantsReplenishment, DeadBodyDecay, MinCreatures, MaxCreatures;
-        private int _worldAge;
+        private long _worldAge;
         /// <summary>
         /// this amount of energy is substracted when creatures attempt illegal actions (like eating when there is nothing to eat, or moving when blocked)
         /// </summary>
@@ -112,7 +112,7 @@ namespace Evolution_Simulation
                 if (action.Move) moveCreature(c);
                 if (action.Eat) eatSomething(c);
 
-                c.Color = c.GetColor();
+                c.Color = Creature.GetColor(c.Energy, c.Diet);
             }
 
             foreach (var body in Grid.DeadBodies)
@@ -144,8 +144,7 @@ namespace Evolution_Simulation
                 }
                 if (Explorer != null) Explorer.Actualize();
 
-                _mainForm.updateLabelCreatureCount(Grid.Creatures.Count);
-                _mainForm.updateLabelPlantsCount(Grid.Plants.Count);
+                _mainForm.PopGraph.Update(Grid);
                 _mainForm.updateLabelWorldAge(_worldAge);
                 if (_stopwatch.ElapsedMilliseconds != 0)
                 {
