@@ -16,16 +16,17 @@ namespace Evolution_Simulation
         private World _world;
         private Display _display;
         private String _title = "Explorer - ";
-        private int _horizon;
+        private XY _centre;
 
         public Explorer(World world)
         {
             IsActive = true;
             InitializeComponent();
             _world = world;
-            _horizon = World.Horizon * 2;
             resetLabels();
-            _display = new Display(_horizon * 2 + 1, _horizon * 2 + 1, pictureBoxSurrounding);
+            var size = (World.Horizon + 1) * 2 + 1;
+            _centre = new XY(size / 2, size / 2);
+            _display = new Display(size, size, pictureBoxSurrounding);
             Show();
         }
 
@@ -111,46 +112,47 @@ namespace Evolution_Simulation
                 else SetCell(trackedCell);
 
                 _display.Clear();
-                for (int dx = -_horizon; dx <= +_horizon; dx++)
+                for (int dx = -_centre.X; dx <= _centre.X; dx++)
                 {
-                    for (int dy = -_horizon; dy <= +_horizon; dy++)
+                    for (int dy = -_centre.Y; dy <= _centre.Y; dy++)
                     {
-                        var x = trackedPos.X + dx;
-                        var y = trackedPos.Y + dy;
-                        var pos = Transform.WrapWorld(new XY(x, y));
+                        var d = new XY(dx, dy);
+                        var pos = Transform.WrapWorld(trackedPos + d);
                         var cell = _world.Grid.Get(pos);
 
                         var color = (cell == null) ? pictureBoxSurrounding.BackColor : cell.Color;
 
-                        _display.fillCell(new XY(dx + _horizon, dy + _horizon), color);
+                        _display.fillCell(_centre + d, color);
                     }
                 }
-                _display.markCell(new XY(_horizon, _horizon));  // mark the center
+                _display.MarkCell(_centre);  // mark the center
 
                 var c = trackedCell as Creature;
                 if (c != null)  // is it a creature?
                 {
-                    for (int s = 0; s < _horizon; s++)
+                    for (int s = 1; s <= World.Horizon; s++)
                     {
                         var ahead = c.GetNextPos(s) - c.Pos;
                         var left = c.GetNextPos(c.Direction - 1, s) - c.Pos;
                         var right = c.GetNextPos(c.Direction + 1, s) - c.Pos;
-                        _display.markCell(new XY(ahead.X + _horizon, ahead.Y + _horizon));
-                        _display.markCell(new XY(left.X + _horizon, left.Y + _horizon));
-                        _display.markCell(new XY(right.X + _horizon, right.Y + _horizon));
+                        _display.MarkCell(_centre + ahead);
+                        _display.MarkCell(_centre + left);
+                        _display.MarkCell(_centre + right);
                     }
                 }
-                
-                _display.refresh();
+                drawBrain(_world.TrackedCreature);              // should be called even if we do not track a creature: to clear the brain view in this case.
 
-                drawBrain(_world.TrackedCreature);
+                _display.refresh();
             }
         }
 
+        /// <summary>
+        /// Plots the neuronal network of a given creature.
+        /// </summary>
         private void drawBrain(Creature creature)
         {
-            pictureBoxBrain.Image = new Bitmap(pictureBoxBrain.Width, pictureBoxBrain.Height);
-            if (creature == null) return;
+            pictureBoxBrain.Image = new Bitmap(pictureBoxBrain.Width, pictureBoxBrain.Height);      // clear anyways
+            if (creature == null) return;                                                           // but only draw brain if we're looking at a creature
 
             var layerCount = Brain.LayerCount + 1;
             var nodes = new Rectangle[layerCount][];
@@ -192,7 +194,6 @@ namespace Evolution_Simulation
                 nodes[i + 1] = webNodes;
             }
 
-            //y += height + layerGap;
             x = defaultX;
             length = Brain.OutputNeuronsCount;
             var outputNodes = new Rectangle[length];
@@ -211,6 +212,12 @@ namespace Evolution_Simulation
                     using (var g = Graphics.FromImage(pictureBoxBrain.Image))
                     {
                         var pen = new Pen(Color.Gray);
+
+                        if (layer == 0) // color input neurons according to what sensors see
+                        {
+                            var p = creature.InputVector.InputsForBrain[neuron];
+                            if (p == 1.0) pen.Color = Color.Red;
+                        }
                         g.DrawEllipse(pen, nodes[layer][neuron]);
                     }
                 }
@@ -220,8 +227,7 @@ namespace Evolution_Simulation
         private void pictureBoxSurrounding_Click(object sender, EventArgs e)
         {
             var p = PointToClient(MousePosition);
-            var xy = _display.fromDisplayToWorld(p) + _world.TrackedPoint;
-            xy += new XY(-_horizon, -_horizon);
+            var xy = _display.fromDisplayToWorld(p) + _world.TrackedPoint - _centre;
             xy = Transform.WrapWorld(xy);
             _world.SetExplorer(xy);
         }

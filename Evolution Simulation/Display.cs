@@ -43,7 +43,7 @@ namespace Evolution_Simulation
         /// <summary>
         /// Outlines the tracked cell for better visibility
         /// </summary>
-        public void markCell(XY pos)
+        public void MarkCell(XY pos)
         {
             if (pos == null) return; 
             var pen = new Pen(Color.Cyan);
@@ -87,13 +87,12 @@ namespace Evolution_Simulation
             _pictureBox.Image = new Bitmap(_pictureBox.Width, _pictureBox.Height);
         }
 
-        public void DrawAll(Grid grid, XY trackedPoint)
+        public void DrawAll(Grid grid)
         {
             drawCreatures(grid.Creatures);
             drawPlants(grid.Plants);
             drawDeadBodies(grid.DeadBodies);
             drawLava(grid.Lavas);
-            markCell(trackedPoint);
             refresh();
         }
 
@@ -138,7 +137,8 @@ namespace Evolution_Simulation
         {
             _pictureBox.Image = new Bitmap(_pictureBox.Width, _pictureBox.Height);
             _scale = getScale(_pictureBox.Width, _pictureBox.Height, Grid.Width, Grid.Height);
-            DrawAll(grid, trackedPoint);
+            DrawAll(grid);
+            MarkCell(trackedPoint);
             refresh();
         }
     }

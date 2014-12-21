@@ -17,22 +17,12 @@ namespace Evolution_Simulation
         private Random _rnd;
         public PopulationDynamicsGraph PopGraph;
         
-        #region Write-only properties for displaying text
-        private int[] _value;
         private double _tps;
         public double TpS { set { _tps = value; lblTpS.Text = _tps.ToString(); } }
-        public int move { set { _value[0] = value; lbl1.Text = _value[0].ToString(); } }
-        public int right { set { _value[1] = value; lbl2.Text = _value[1].ToString(); } }
-        public int eat { set { _value[2] = value; lbl3.Text = _value[2].ToString(); } }
-        public int left { set { _value[3] = value; lbl4.Text = _value[3].ToString(); } }
-        public int split { set { _value[4] = value; lbl5.Text = _value[4].ToString(); } }
-        public int stay { set { _value[5] = value; lbl6.Text = _value[5].ToString(); } }
-        #endregion
-
+        
         public MainForm()
         {
             InitializeComponent();
-            _value = new int[6];
             _rnd = new Random();
             _display = new Display(trBarWidth.Value, trBarHeight.Value, pictureBox);
             

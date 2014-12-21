@@ -92,7 +92,7 @@ namespace Evolution_Simulation
                 XY ahead, right, left;
 
                 var i = 0;
-                for (int s = 0; s < Horizon; s++)
+                for (int s = 1; s <= Horizon; s++)
                 {
                     ahead = c.GetNextPos(s);
                     left = c.GetNextPos(c.Direction - 1, s);
@@ -103,7 +103,7 @@ namespace Evolution_Simulation
                     sensors[i++] = Grid.Get(right);
                 }
 
-                var action = c.UseBrain(sensors, _mainForm);
+                var action = c.UseBrain(sensors);
 
                 if (action.Left) c.Direction--;
                 if (action.Right) c.Direction++;
@@ -131,7 +131,8 @@ namespace Evolution_Simulation
             if (_worldAge % SkipInterval == 0)
             {
                 _display.Clear();
-                _display.DrawAll(Grid, TrackedPoint);
+                _display.DrawAll(Grid);
+                _display.MarkCell(TrackedPoint);
                 _display.refresh();
 
                 if (TrackedCreature != null)       // do we track a creature?
@@ -216,7 +217,7 @@ namespace Evolution_Simulation
             {
                 Grid.Add(typeof(Creature));
             }
-            for (int i = 0; i < Grid.Width * Grid.Height / 10; i++)
+            for (int i = 0; i < Grid.Width * Grid.Height / 40; i++)
             {
                 Grid.Add(typeof(Plant));
             }
@@ -232,6 +233,11 @@ namespace Evolution_Simulation
         /// </summary>
         public void SetExplorer(XY pos)
         {
+            _display.Clear();
+            _display.DrawAll(Grid);
+            _display.MarkCell(pos);
+            _display.refresh();
+
             TrackedPoint = pos;
             TrackedCreature = Grid.Get(pos) as Creature;
 

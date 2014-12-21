@@ -114,8 +114,44 @@ namespace Evolution_Simulation
                 g.DrawString(text, _font, brush, loc);
             }
             #endregion
+            writeHeadlines();
 
             pictureBox.Refresh();
+        }
+
+        private void writeHeadlines()
+        {
+            _headlineWidth = pictureBox.Width / 5;
+            using (var g = Graphics.FromImage(pictureBox.Image))
+            {
+                var brush = new SolidBrush(_plantCol);
+                var text = "plant";
+                var loc = new Point(0, 0);
+                g.DrawString(text, _font, brush, loc);
+
+                brush.Color = _vegiCol;
+                loc.X += _headlineWidth;
+                text = "vegi";
+                g.DrawString(text, _font, brush, loc);
+
+                brush.Color = _omniCol;
+                loc.X += _headlineWidth;
+                text = "omni";
+                g.DrawString(text, _font, brush, loc);
+
+                brush.Color = _meatCol;
+                loc.X += _headlineWidth;
+                text = "meat";
+                g.DrawString(text, _font, brush, loc);
+
+                brush.Color = _deadBCol;
+                loc.X += _headlineWidth;
+                text = "dead";
+                g.DrawString(text, _font, brush, loc);
+
+                var size = g.MeasureString(text, _font);
+                _headlineHeight = (int)size.Height;
+            }
         }
 
         /// <summary>
@@ -158,40 +194,7 @@ namespace Evolution_Simulation
         private void pictureBox_SizeChanged(object sender, EventArgs e)
         {
             pictureBox.Image = new Bitmap(pictureBox.Width, pictureBox.Height);
-
-            #region write headlines
-            _headlineWidth = pictureBox.Width / 5;
-            using (var g = Graphics.FromImage(pictureBox.Image))
-            {
-                var brush = new SolidBrush(_plantCol);
-                var text = "plant";
-                var loc = new Point(0, 0);
-                g.DrawString(text, _font, brush, loc);
-
-                brush.Color = _vegiCol;
-                loc.X += _headlineWidth;
-                text = "vegi";
-                g.DrawString(text, _font, brush, loc);
-
-                brush.Color = _omniCol;
-                loc.X += _headlineWidth;
-                text = "omni";
-                g.DrawString(text, _font, brush, loc);
-
-                brush.Color = _meatCol;
-                loc.X += _headlineWidth;
-                text = "meat";
-                g.DrawString(text, _font, brush, loc);
-
-                brush.Color = _deadBCol;
-                loc.X += _headlineWidth;
-                text = "dead";
-                g.DrawString(text, _font, brush, loc);
-
-                var size = g.MeasureString(text, _font);
-                _headlineHeight = (int)size.Height;
-            }
-            #endregion
+            writeHeadlines();
         }
     }
 }

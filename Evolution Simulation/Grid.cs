@@ -226,10 +226,11 @@ namespace Evolution_Simulation
         }
 
         /// <summary>
-        /// returns the position which is >range< cells away from >pos<, in direction >dir<. 
+        /// returns the position which is §range cells away from §pos, in direction §dir. 
         /// </summary>
         public static XY directionToXY(XY pos, int dir, int range)
         {
+            dir = Transform.Modulo(dir, 4);
             var d = new XY(0, 0);
             switch (dir)
             {

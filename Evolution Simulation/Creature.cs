@@ -9,6 +9,10 @@ namespace Evolution_Simulation
     public class Creature : LivingCell
     {
         public int Age, Diet, Splits;
+        /// <summary>
+        /// Used to display brain input data on explorer window.
+        /// </summary>
+        public InputVector InputVector;
 
         private Random _rnd;
         private Brain _brain;
@@ -17,22 +21,20 @@ namespace Evolution_Simulation
         public int Direction
         {
             get { return _direction; }
-            set { _direction = value % 4; }
+            set { _direction = Transform.Modulo(value, 4);; }
         }        
 
-        public Creature(XY pos, Random rnd) : this(pos, rnd, null)
-        {
-        }
+        public Creature(XY pos, Random rnd) : this(pos, rnd, null) {}
 
         private Creature(XY pos, Random rnd, Creature parent)
         {            
-            if (parent == null)
+            if (parent == null)     // create a random creature
             {
-                Energy = 100;
+                Energy = 120;
                 Diet = 50;
                 _brain = new Brain(rnd, null);
             }
-            else
+            else                    // create a child, based on it's parent
             {
                 Energy = parent.Energy / 2;
                 Diet = parent.Diet;
@@ -78,29 +80,44 @@ namespace Evolution_Simulation
             }
         }
 
+        /// <summary>
+        /// Gets coordinates of where this creature would be in the next step
+        /// </summary>
         public XY GetNextPos()
         {
             return GetNextPos(Direction, 1);
         }
 
+        /// <summary>
+        /// Gets coordinates of where this creature would be in §range steps
+        /// </summary>
         public XY GetNextPos(int range)
         {
             return GetNextPos(Direction, range);
         }
 
+        /// <summary>
+        /// Gets coordinates of where this creature would be in §range steps, if walking in §direction
+        /// </summary>
         public XY GetNextPos(int direction, int range)
         {
+            direction = Transform.Modulo(direction, 4);
             return Grid.directionToXY(Pos, direction, range);
         }
 
-        public ActionVector UseBrain(Cell[] sensors, MainForm mainForm)
+        /// <summary>
+        /// Does 3 things: 1) updates brain's InputNeurons, 2) runs the neuronal network, 3) uses the network's output to generate an ActionVector
+        /// </summary>
+        /// <param name="sensors"></param>
+        public ActionVector UseBrain(Cell[] sensors)
         {
-            _brain.UpdateInputs(new InputVector(this, Energy, Age, sensors));
-            return new ActionVector(_brain.GetOutput(), _rnd, mainForm);
+            InputVector = new InputVector(this, Energy, Age, sensors);
+            _brain.UpdateInputs(InputVector);
+            return new ActionVector(_brain.GetOutput(), _rnd);
         }
 
         /// <summary>
-        /// Calculates a creature's color based on Energy (more = brighter) and Diet (more plants = blue, more meat = red).
+        /// Calculates a creature's color based on Energy (more = brighter) and Diet (0 / blue = plants only, 100 / red = meat only).
         /// </summary>
         public static System.Drawing.Color GetColor(int energy, int diet)
         {
@@ -113,6 +130,9 @@ namespace Evolution_Simulation
             return System.Drawing.Color.FromArgb(alpha, red, 0, blue);
         }
 
+        /// <summary>
+        /// This is how creatures reproduce: Asexual, by splitting themselves into two, like bacteria. Adjustable mutation included.
+        /// </summary>
         public Creature Split(XY freePos)
         {
             Splits++;
@@ -127,9 +147,12 @@ namespace Evolution_Simulation
             return child;
         }
 
-        public double GeneticDistance(Creature c)
+        /// <summary>
+        /// Performant hack to check how closely related two creatures are (0 = identical, 1 = max apart). Based on diet only, so not very accurate.
+        /// </summary>
+        public static double GetGeneticDistance(Creature a, Creature b)
         {
-            return _brain.GeneticDistance(c._brain);
+            return (b.Diet - a.Diet) / 100.0;
         }
     }
 }

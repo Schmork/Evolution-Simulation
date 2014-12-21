@@ -5,34 +5,45 @@ using System.Text;
 
 namespace Evolution_Simulation
 {
-    class InputVector
+    /// <summary>
+    /// Basically an Array with logic how to fill it. Takes data from a creature and it's surrounding world and prepares the data so it can be used as input for the creature's brain.
+    /// </summary>
+    public class InputVector
     {
         private double _scalingFactor = 500;
+        /// <summary>
+        /// Either 0 or 1 for sensor data, or between 0 and 1 for continuous values like energy and age.
+        /// </summary>
         public double[] InputsForBrain;
 
-        public InputVector(Creature caller, int energy, int age, Cell[] sensors)
-        {
-            var types = System.Reflection.Assembly.GetCallingAssembly().GetTypes()
+        /// <summary>
+        /// All types a creature can see - Lava, Plant, Creature and DeadBody
+        /// </summary>
+        public static Type[] Types = System.Reflection.Assembly.GetCallingAssembly().GetTypes()
                 .Where(t => t.IsSubclassOf(typeof(Cell)) && !t.IsAbstract)
                 .OrderBy(o => o.Name).ToArray();
 
-            InputsForBrain = new double[sensors.Length * types.Length + 2];
+        public InputVector(Creature caller, int energy, int age, Cell[] sensors)
+        {
+            InputsForBrain = new double[sensors.Length * Types.Length + 2];
 
             int n = 0;
-            for (int i = 0; i < sensors.Length; i++)
+            for (int i = 0; i < sensors.Length; i++)        // cycle sensors array
             {
-                for (int c = 0; c < types.Count(); c++)
+                for (int c = 0; c < Types.Count(); c++)     // cycle possible types to check which type this sensor sees
                 {
                     n++;
-                    if (sensors[i] != null && sensors[i].GetType() == types[c]) InputsForBrain[n] = 1;
-                    /*if (sensors[i] != null && sensors[i].GetType() == typeof(Creature))
+
+                    var spotted = sensors[i] as Creature;
+                    // special treatment if we spotted a creature - friend or foe? eat or run?
+                    if (spotted != null)
                     {
-                        var creature = (Creature)caller;
-                        var other = (Creature)sensors[i];
-                        var distance = creature.GeneticDistance(other);
-                        InputsForBrain[n] = Normalizer.StayInBounds(distance - 1, 1);
-                        var z = 5;
-                    }*/
+                        InputsForBrain[n] = Creature.GetGeneticDistance(caller, spotted);
+                    }
+                    else
+                    {
+                        if (sensors[i] != null && sensors[i].GetType() == Types[c]) InputsForBrain[n] = 1;
+                    }
                 }
             }
 
