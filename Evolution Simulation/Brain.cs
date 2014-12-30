@@ -10,6 +10,21 @@ namespace Evolution_Simulation
     {
         public Neuron[][] Neurons;
 
+        public class Neuron
+        {
+            public double[] Connections;
+            public double Bias;
+            public double Value;
+
+            public Neuron() { }
+            public Neuron(double bias, double[] connections)
+            {
+                Connections = connections;
+                Bias = bias;
+            }
+        }
+
+
         public static double MaxOffset = 5;
         public static double MaxFactor = 5;
         public static double MaxWeight = 5;
@@ -44,7 +59,10 @@ namespace Evolution_Simulation
 
         private void createNetwork(Brain brain)
         {
+            // first layer
             createInputLayer();
+
+            // mid layers
             for (int layer = 1; layer < LayerCount; layer++)
             {
                 if (brain == null)
@@ -57,6 +75,7 @@ namespace Evolution_Simulation
                 }
             }
 
+            // last layer
             if (brain == null)
             {
                 createWebLayer(LayerCount, OutputNeuronsCount);
@@ -70,6 +89,7 @@ namespace Evolution_Simulation
         private void createInputLayer()
         {
             Neurons[0] = new Neuron[InputNeuronsCount];
+
             for (int i = 0; i < InputNeuronsCount; i++)
             {
                 Neurons[0][i] = new Neuron();
@@ -79,30 +99,30 @@ namespace Evolution_Simulation
         private void createWebLayer(int layer, int neuronCount)
         {
             Neurons[layer] = new Neuron[neuronCount];
-            var prevLayer = Neurons[layer - 1];
+            //var prevLayer = NeuronsOld[layer - 1];
 
+            var prevLayer = Neurons[layer - 1];
             for (int i = 0; i < neuronCount; i++)
             {
+                //NeuronsOld[layer][i] = createWebbedNeuron(prevLayer);
                 Neurons[layer][i] = createWebbedNeuron(prevLayer);
             }
         }
 
         private Neuron createWebbedNeuron(Neuron[] prevLayer)
         {
-            var connections = new Neuron.Connection[prevLayer.Length];
+            var connections = new double[prevLayer.Length];
             double bias;
 
             var chance = 1;         // to create a new, random network, enforce mutation (else everything would remain 0)
 
             for (int n = 0; n < prevLayer.Length; n++)
             {
-                var weight = mutate(chance, MaxWeight);
-                var sourceNeuron = prevLayer[n];
-                connections[n] = new Neuron.Connection(sourceNeuron, weight);
+                connections[n] = mutate(chance, MaxWeight);
             }
             bias = mutate(chance, MaxOffset);
 
-            return new Neuron(connections, bias);
+            return new Neuron(bias, connections);
         }
 
         private void mutateLayer(int layer, Brain brain)
@@ -118,22 +138,21 @@ namespace Evolution_Simulation
         private Neuron mutateNeuron(Neuron webNeuron, Neuron[] prevLayer)
         {
             var length = webNeuron.Connections.Length;
-            var connections = new Neuron.Connection[length];
+            var connections = new double[length];
 
             var chance = MutationChance / (double)ChanceDivisor;         // to create a new, random network, enforce mutation (else everything would remain 0)
             var change = MutationChange * ChangeFactor;
 
             for (int n = 0; n < length; n++)
             {
-                var weight = Transform.StayInBounds(
-                            webNeuron.Connections[n].Weight
+                connections[n] = Transform.StayInBounds(
+                            webNeuron.Connections[n]
                             + mutate(chance, MaxWeight), MaxWeight);
-                connections[n] = new Neuron.Connection(prevLayer[n], weight);
             }
             var bias = Transform.StayInBounds(
                         webNeuron.Bias + mutate(chance, change), MaxOffset);
 
-            return new Neuron(connections, bias);
+            return new Neuron(bias, connections);
         }
 
         private double mutate(double chance, double change)
@@ -153,39 +172,41 @@ namespace Evolution_Simulation
         {
             for (int i = 0; i < inputVector.InputsForBrain.Length; i++)
             {
-                Neurons[0][i].SetInputValue(inputVector.InputsForBrain[i]);
+                Neurons[0][i].Value = inputVector.InputsForBrain[i];
             }
-            resetValues();
         }
-
-        /// <summary>
-        /// Sets .HasValue of each neuron to false, in preparation for the next run.
-        /// </summary>
-        private void resetValues()
-        {
-            for (int i = 1; i < Neurons.Length; i++)        // skip InputNeuron Layer
-            {
-                foreach (var neuron in Neurons[i])
-                {
-                    neuron.HasValue = false;
-                }
-            }
-            this.GetOutput();
-        }
-
+        
         /// <summary>
         /// Calculates all required neuron values. Returns values of output layer
         /// </summary>
         public double[] GetOutput()
         {
-            var outputNeurons = Neurons[Neurons.Length - 1];
-            var outputs = new double[OutputNeuronsCount];
+            var nLength = Neurons.Length;
 
-            for (int i = 0; i < outputs.Count(); i++)
+            #region calculate values for all neurons
+            for (int i = 1; i < nLength; i++)   // cycle all neuron layers after the input layer
             {
-                outputs[i] = outputNeurons[i].GetValue();
+                for (int j = 0; j < Neurons[i].Length; j++)     // cycle all neurons in this layer
+                {
+                    var value = 0.0;
+                    for (int k = 0; k < Neurons[i - 1].Length; k++)     // previous layer's neurons - get connectionStrengths towards them
+                    {
+                        value += Neurons[i - 1][k].Value * Neurons[i][j].Connections[k];    // get cumulative value of all previous layer's neurons * connectionStrength
+                    }
+                    Neurons[i][j].Value = Transform.StayInBounds(value, 1);         // this will be the value of the current neuron
+                }
             }
-            return softMax(outputs);
+            #endregion
+
+            #region get output from last layer
+            var outputLayer = Neurons[nLength - 1];
+            var outputArray = new double[outputLayer.Length];
+            for (int i = 0; i < outputLayer.Length; i++)
+			{
+                outputArray[i] = outputLayer[i].Value;
+            }
+            return softMax(outputArray);
+            #endregion
         }
 
         private double[] softMax(double[] outputs)
@@ -215,7 +236,7 @@ namespace Evolution_Simulation
 
                     for (int con = 0; con < a.Connections.Length; con++)
                     {
-                        dist += Math.Abs(a.Connections[con].Weight - b.Connections[con].Weight);
+                        //dist += Math.Abs(a.Connections[con].Weight - b.Connections[con].Weight);
                     }
                 }
             }

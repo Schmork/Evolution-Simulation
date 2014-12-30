@@ -108,7 +108,6 @@ namespace Evolution_Simulation
         /// <summary>
         /// Does 3 things: 1) updates brain's InputNeurons, 2) runs the neuronal network, 3) uses the network's output to generate an ActionVector
         /// </summary>
-        /// <param name="sensors"></param>
         public ActionVector UseBrain(Cell[] sensors)
         {
             InputVector = new InputVector(this, Energy, Age, sensors);
@@ -124,7 +123,7 @@ namespace Evolution_Simulation
             var max = 255;
             var blue = diet * max / 100;
             var red = (100 - diet) * max / 100;
-            var alpha = energy / 2 + 40;
+            var alpha = energy + 50;
             if (alpha > max) alpha = max;
             if (alpha < 70) alpha = 70;
             return System.Drawing.Color.FromArgb(alpha, red, 0, blue);

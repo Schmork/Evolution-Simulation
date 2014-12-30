@@ -219,12 +219,12 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.trBarSpeed.LargeChange = 10;
             this.trBarSpeed.Location = new System.Drawing.Point(7, 20);
-            this.trBarSpeed.Maximum = 201;
+            this.trBarSpeed.Maximum = 501;
             this.trBarSpeed.Name = "trBarSpeed";
             this.trBarSpeed.Size = new System.Drawing.Size(386, 45);
             this.trBarSpeed.TabIndex = 0;
             this.trBarSpeed.TickFrequency = 5;
-            this.trBarSpeed.Value = 114;
+            this.trBarSpeed.Value = 250;
             this.trBarSpeed.Scroll += new System.EventHandler(this.trBarSpeed_Scroll);
             // 
             // grpBoxWidth

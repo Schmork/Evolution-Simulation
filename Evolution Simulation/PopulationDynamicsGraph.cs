@@ -49,9 +49,9 @@ namespace Evolution_Simulation
             _currentX = _margin;
             _plantCol = Cell.StandardColor(typeof(Plant));
             _deadBCol = Cell.StandardColor(typeof(DeadBody));
-            _vegiCol = Creature.GetColor(1000, 100);
-            _omniCol = Creature.GetColor(1000, 50);
-            _meatCol = Creature.GetColor(1000, 0);
+            _vegiCol = Creature.GetColor(10000, 100);
+            _omniCol = Creature.GetColor(10000, 50);
+            _meatCol = Creature.GetColor(10000, 0);
         }
 
         public void Update(Grid grid)
@@ -84,7 +84,7 @@ namespace Evolution_Simulation
             {
                 #region clear previous text
                 var size = new Size(new Point(pictureBox.Width, _headlineHeight * 2));
-                var rec = new Rectangle(new Point(0, _headlineHeight + 1), size);
+                var rec = new Rectangle(new Point(0, 0), size);
                 g.FillRectangle(new SolidBrush(pictureBox.BackColor), rec);
                 #endregion
 
